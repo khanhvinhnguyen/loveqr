@@ -1,0 +1,56 @@
+{
+  "name": "loveqr",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tooltip": "^1.2.7",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "@react-three/postprocessing": "^2.19.1",
+    "antd": "^5.18.0",
+    "canvas": "^3.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.511.0",
+    "lz-string": "^1.5.0",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
+    "r3f-perf": "^7.2.1",
+    "react-intl-universal": "^2.11.1",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.165.0",
+    "three-csg-ts": "^3.2.0",
+    "ts-node": "^10.9.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20.17.50",
+    "@types/react": "19.1.5",
+    "@types/react-dom": "19.1.5",
+    "eslint": "^8",
+    "eslint-config-next": "15.3.2",
+    "next": "^14.2.29",
+    "postcss": "^8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "@types/react": "19.1.5",
+    "@types/react-dom": "19.1.5"
+  }
+}
