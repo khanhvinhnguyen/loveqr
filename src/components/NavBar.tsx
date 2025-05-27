@@ -13,6 +13,7 @@ const NavBar = () => {
             alt="Logo"
             width={100}
             height={100}
+            unoptimized
           />
           <h1 className="text-2xl font-bold">LoveQR</h1>
         </Link>
