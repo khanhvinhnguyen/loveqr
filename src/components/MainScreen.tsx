@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import CryptoJS from 'crypto-js'
 import LZString from 'lz-string'
 import { v7 } from 'uuid'
+import { Eye, QrCode } from 'lucide-react'
 
 import HeartShapedQRCode from './HeartShapedQRCode'
 import { Button } from '@/components/ui/button'
@@ -83,6 +84,7 @@ export default function MainScreen() {
           disabled={disable}
           onClick={handleGenerate}
         >
+          <QrCode />
           Generate
         </Button>
 
@@ -92,6 +94,7 @@ export default function MainScreen() {
           disabled={disable}
           onClick={handleReview}
         >
+          <Eye />
           Review
         </Button>
       </div>

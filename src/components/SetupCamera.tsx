@@ -1,12 +1,9 @@
-import { useTheme } from "@/hook/ThemeProvider"
 import { OrbitControls } from "@react-three/drei"
 
 const SetupCamera = () => {
-  const { systemTheme } = useTheme()
-
   return (
     <>
-      <color attach="background" args={[systemTheme === 'dark' ? "#000000" : "#ffffff"]} />
+      <color attach="background" args={["#15151e"]} />
       <OrbitControls />
       {/* <axesHelper args={[5]} /> */}
     </>

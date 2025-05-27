@@ -1,37 +1,39 @@
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { Billboard, useTexture } from "@react-three/drei";
-
+import { useGLTF, Billboard } from "@react-three/drei";
 import { FLOOR_Y, spawnPosition, spawnVelocity } from "./constants";
+
+const HEART_URL = "/models/heart.glb";
+useGLTF.preload(HEART_URL);
 
 interface HeartsProps {
   count?: number;
 }
 
-export default function Hearts({ count = 40 }: HeartsProps) {
-  const texture = useTexture("/heart.png");
+export default function Hearts({ count = 30 }: HeartsProps) {
+  const { scene: heartModel } = useGLTF(HEART_URL);
 
   const hearts = useMemo(
     () =>
       Array.from({ length: count }).map(() => ({
         position: spawnPosition(),
         velocity: spawnVelocity(),
-        scale: 0.3 + Math.random() * 0.5,
+        scale: 0.003 + Math.random() * 0.005,
         spin: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 1),
       })),
     [count]
   );
 
-  const planeRefs = useRef<THREE.Mesh[]>([]);
-  const billboardRefs = useRef<THREE.Object3D[]>([]);
+  const billRefs = useRef<THREE.Object3D[]>([]);
+  const modelRefs = useRef<THREE.Object3D[]>([]);
 
   useFrame((_, delta) => {
     for (let i = 0; i < hearts.length; i++) {
       const h = hearts[i];
-      const billboard = billboardRefs.current[i];
-      const plane = planeRefs.current[i];
-      if (!billboard || !plane) continue;
+      const bill = billRefs.current[i];
+      const model = modelRefs.current[i];
+      if (!bill || !model) continue;
 
       h.position.addScaledVector(h.velocity, delta);
 
@@ -40,8 +42,8 @@ export default function Hearts({ count = 40 }: HeartsProps) {
         h.velocity.copy(spawnVelocity());
       }
 
-      billboard.position.copy(h.position);
-      plane.rotation.y += h.spin * delta;
+      bill.position.copy(h.position);
+      model.rotation.y += h.spin * delta;
     }
   });
 
@@ -51,19 +53,17 @@ export default function Hearts({ count = 40 }: HeartsProps) {
         <Billboard
           key={i}
           ref={(el) => {
-            if (el) billboardRefs.current[i] = el;
+            if (el) billRefs.current[i] = el;
           }}
           position={h.position.toArray()}
         >
-          <mesh
-            ref={(el) => {
-              if (el) planeRefs.current[i] = el;
+          <primitive
+            object={heartModel.clone(true)}
+            ref={(el: THREE.Object3D<THREE.Object3DEventMap>) => {
+              if (el) modelRefs.current[i] = el;
             }}
             scale={h.scale}
-          >
-            <planeGeometry args={[1, 1]} />
-            <meshBasicMaterial transparent map={texture} />
-          </mesh>
+          />
         </Billboard>
       ))}
     </>

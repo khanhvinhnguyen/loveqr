@@ -17,6 +17,9 @@ const LoveEffect = ({ messages = MESSAGES_DEFAULT }: LoveEffectProps) => {
       <Canvas camera={{ position: [1, 1, 3] }}>
         <SetupCamera />
 
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 5, 5]} intensity={1}/>
+
         <Suspense fallback={null}>
           <FallingTextField messages={messages} />
           <Hearts />

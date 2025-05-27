@@ -3,6 +3,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { toPng } from "html-to-image";
 import download from "downloadjs";
 import { Button } from "@/components/ui/button";
+import { Download } from 'lucide-react';
 
 interface HeartMaskQRCodeProps {
   data?: string;
@@ -46,7 +47,7 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className='absolute rounded-[50%] right-3 border-[1px] border-solid border-primary' />
+            className='absolute rounded-[50%] right-3 border-[5px] border-solid border-white' />
 
           {/* Top right */}
           <QRCodeCanvas
@@ -54,7 +55,7 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className='absolute rounded-[50%] bottom-3 border-[1px] border-solid border-primary' />
+            className='absolute rounded-[50%] bottom-3 border-[5px] border-solid border-white' />
 
           {/* QR code */}
           <QRCodeCanvas
@@ -62,12 +63,13 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px] border-2 border-solid border-primary`}
+            className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px] border-[5px] border-solid border-white`}
           />
         </div>
       </div>
 
       <Button onClick={handleDownload}>
+        <Download />
         Download QRcode
       </Button>
     </>

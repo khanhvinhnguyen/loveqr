@@ -11,7 +11,7 @@ const randomNeonColor = () => {
 };
 
 export default function FallingTextField({
-  count = 30,
+  count = 17,
   messages,
 }: {
   count?: number;
@@ -23,6 +23,7 @@ export default function FallingTextField({
         position: spawnPosition(),
         velocity: spawnVelocity(),
         message: messages[Math.floor(Math.random() * messages.length)],
+        fontSize: THREE.MathUtils.randFloat(0.7, 1.2),
         color: randomNeonColor(),
       })),
     [count, messages]
@@ -60,7 +61,7 @@ export default function FallingTextField({
           follow
         >
           <Text
-            fontSize={1.2}
+            fontSize={it.fontSize}
             color={it.color}
             anchorX="center"
             anchorY="middle"
