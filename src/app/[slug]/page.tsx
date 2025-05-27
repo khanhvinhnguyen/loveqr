@@ -1,10 +1,11 @@
 "use client"
-
 import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import CryptoJS from 'crypto-js'
 import LZString from 'lz-string'
 import { useSearchParams } from 'next/navigation'
-import LoveEffect from '@/components/LoveEffect'
+
+const LoveEffect = dynamic(() => import('@/components/LoveEffect'), { ssr: false })
 
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!
 
@@ -45,7 +46,7 @@ export default function LoveQRPage() {
 
   return (
     <div className="w-full h-screen">
-      <LoveEffect messages={content}/>
+      <LoveEffect messages={content} />
     </div>
   )
 }

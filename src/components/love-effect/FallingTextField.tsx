@@ -11,7 +11,7 @@ const randomNeonColor = () => {
 };
 
 export default function FallingTextField({
-  count = 60,
+  count = 30,
   messages,
 }: {
   count?: number;
