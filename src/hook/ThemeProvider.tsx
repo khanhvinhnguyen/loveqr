@@ -56,7 +56,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(initialTheme)
     updateResolvedTheme(initialTheme)
     setMounted(true)
-  }, [])
+  }, [updateResolvedTheme])
 
   useEffect(() => {
     if (!mounted || typeof window === "undefined") return

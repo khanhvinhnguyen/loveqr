@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import { MESSAGES_DEFAULT } from "./love-effect/constants";
 import FallingTextField from "./love-effect/FallingTextField";
@@ -20,6 +21,10 @@ const LoveEffect = ({ messages = MESSAGES_DEFAULT }: LoveEffectProps) => {
           <FallingTextField messages={messages} />
           <Hearts />
         </Suspense>
+
+        <EffectComposer>
+          <Bloom intensity={1.5} luminanceThreshold={0.2} />
+        </EffectComposer>
       </Canvas>
     </div>
   );

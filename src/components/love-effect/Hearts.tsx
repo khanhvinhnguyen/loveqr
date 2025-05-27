@@ -18,17 +18,20 @@ export default function Hearts({ count = 40 }: HeartsProps) {
         position: spawnPosition(),
         velocity: spawnVelocity(),
         scale: 0.3 + Math.random() * 0.5,
+        spin: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 1),
       })),
     [count]
   );
 
-  const refs = useRef<THREE.Object3D[]>([]);
+  const planeRefs = useRef<THREE.Mesh[]>([]);
+  const billboardRefs = useRef<THREE.Object3D[]>([]);
 
   useFrame((_, delta) => {
     for (let i = 0; i < hearts.length; i++) {
       const h = hearts[i];
-      const mesh = refs.current[i];
-      if (!mesh) continue;
+      const billboard = billboardRefs.current[i];
+      const plane = planeRefs.current[i];
+      if (!billboard || !plane) continue;
 
       h.position.addScaledVector(h.velocity, delta);
 
@@ -37,7 +40,8 @@ export default function Hearts({ count = 40 }: HeartsProps) {
         h.velocity.copy(spawnVelocity());
       }
 
-      mesh.position.copy(h.position);
+      billboard.position.copy(h.position);
+      plane.rotation.y += h.spin * delta;
     }
   });
 
@@ -47,11 +51,16 @@ export default function Hearts({ count = 40 }: HeartsProps) {
         <Billboard
           key={i}
           ref={(el) => {
-            if (el) refs.current[i] = el;
+            if (el) billboardRefs.current[i] = el;
           }}
           position={h.position.toArray()}
         >
-          <mesh scale={h.scale}>
+          <mesh
+            ref={(el) => {
+              if (el) planeRefs.current[i] = el;
+            }}
+            scale={h.scale}
+          >
             <planeGeometry args={[1, 1]} />
             <meshBasicMaterial transparent map={texture} />
           </mesh>

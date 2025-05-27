@@ -5,8 +5,13 @@ import { useFrame } from "@react-three/fiber";
 import { Billboard, Text } from "@react-three/drei";
 import { FLOOR_Y, spawnPosition, spawnVelocity } from "./constants";
 
+const randomNeonColor = () => {
+  const t = Math.random();
+  return new THREE.Color().setHSL(0.97 /* ~hồng */, 0.7, 1 - t * 0.15).getStyle();
+};
+
 export default function FallingTextField({
-  count = 30,
+  count = 60,
   messages,
 }: {
   count?: number;
@@ -18,11 +23,11 @@ export default function FallingTextField({
         position: spawnPosition(),
         velocity: spawnVelocity(),
         message: messages[Math.floor(Math.random() * messages.length)],
+        color: randomNeonColor(),
       })),
     [count, messages]
   );
 
-  // Ref tới mesh thật trong scene
   const refs = useRef<THREE.Object3D[]>([]);
 
   useFrame((_, delta) => {
@@ -31,22 +36,14 @@ export default function FallingTextField({
       const mesh = refs.current[i];
       if (!mesh) continue;
 
-      // Tính vị trí mới
       it.position.addScaledVector(it.velocity, delta);
 
-      // Reset nếu chạm “sàn”
       if (it.position.y < FLOOR_Y) {
         it.position.copy(spawnPosition());
         it.velocity.copy(spawnVelocity());
         it.message = messages[Math.floor(Math.random() * messages.length)];
-
-        // Cập nhật text khi đổi thông điệp
-        // Vì nội dung <Text> là children của Billboard, cập nhật
-        // vị trí xong rồi gọi mesh.children[0].setText? → đơn giản nhất là
-        // đưa message thành key như dưới (khi đổi sẽ re-mount Text)
+        it.color = randomNeonColor();
       }
-
-      // Đẩy tọa độ mới vào object3D
       mesh.position.copy(it.position);
     }
   });
@@ -64,10 +61,11 @@ export default function FallingTextField({
         >
           <Text
             fontSize={1.2}
+            color={it.color}
             anchorX="center"
             anchorY="middle"
-            outlineColor="#ffffff"
-            outlineWidth={0.004}
+            outlineColor={it.color}
+            outlineWidth={0.02}
             key={it.message}
           >
             {it.message}
