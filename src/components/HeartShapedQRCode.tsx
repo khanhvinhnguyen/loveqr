@@ -20,11 +20,11 @@ const HeartMaskQRCode = ({
     if (!wrapperRef.current) return;
     try {
       const dataUrl = await toPng(wrapperRef.current, {
-        pixelRatio: 2,              // ảnh sắc nét hơn
+        pixelRatio: 2,
         backgroundColor: "transparent",
         cacheBust: true,
       });
-      download(dataUrl, "heart_qr.png"); // tải về
+      download(dataUrl, "heart_qr.png");
     } catch (err) {
       console.error("Export QR failed:", err);
     }
@@ -32,8 +32,14 @@ const HeartMaskQRCode = ({
 
   return (
     <>
-      <div className={`flex overflow-hidden relative flex-col items-center w-full bg-transparent md:w-[450px] h-[600px]`}>
-        <div ref={wrapperRef} className={`relative w-[450px] h-[450px] rotate-[0.625turn] scale-75`}>
+      <div className={`flex overflow-hidden relative flex-col items-center w-full bg-transparent md:w-[450px] h-[450px]`}>
+        <div
+          ref={wrapperRef}
+          className={`relative w-[450px] h-[450px]`}
+          style={{
+            transform: "rotate(0.625turn) scale(.75) translate(4rem, 4rem)",
+          }}
+        >
           {/* Top left */}
           <QRCodeCanvas
             value={data}
@@ -56,7 +62,8 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px]`} />
+            className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px] border-2 border-solid border-primary`}
+          />
         </div>
       </div>
 

@@ -27,10 +27,10 @@ export default function LoveQRPage() {
       const decompressed = LZString.decompressFromEncodedURIComponent(bytes.toString(CryptoJS.enc.Utf8))
       const payload = JSON.parse(decompressed)
 
-      const { note, token } = payload
+      const { note, review, token } = payload
       const storedToken = localStorage.getItem('deviceToken')
 
-      if (token !== storedToken) {
+      if (review && token !== storedToken) {
         alert("Bạn không có quyền truy cập nội dung này.")
         window.location.href = '/'
         return
