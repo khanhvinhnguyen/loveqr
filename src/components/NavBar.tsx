@@ -8,7 +8,7 @@ const NavBar = () => {
       <div className="flex justify-between items-center">
         <Link href="/" className='flex items-center'>
           <Image
-            src="/logo.png"
+            src="/loveqr-logo.png"
             className="w-10 h-10"
             alt="Logo"
             width={100}
