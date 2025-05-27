@@ -71,7 +71,7 @@ export default function MainScreen() {
       <label className="block mb-2">Lời nhắn (mỗi dòng 1 lời nhắn nhé)</label>
       <textarea
         rows={5}
-        className="p-2 mb-4 w-full rounded border"
+        className="p-2 mb-4 w-full rounded border bg-background"
         placeholder="Nhập lời nhắn..."
         value={note}
         onChange={e => setNote(e.target.value)}

@@ -1,46 +1,69 @@
-import { QRCodeSVG } from 'qrcode.react';
+import { useRef } from "react";
+import { QRCodeCanvas } from "qrcode.react";
+import { toPng } from "html-to-image";
+import download from "downloadjs";
+import { Button } from "@/components/ui/button";
+
+interface HeartMaskQRCodeProps {
+  data?: string;
+  size?: number;
+}
 
 const HeartMaskQRCode = ({
   data = 'https://example.com',
   size = 300,
-  // text = 'Love forever and always',
-}) => {
+}: HeartMaskQRCodeProps) => {
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = async () => {
+    if (!wrapperRef.current) return;
+    try {
+      const dataUrl = await toPng(wrapperRef.current, {
+        pixelRatio: 2,              // ảnh sắc nét hơn
+        backgroundColor: "transparent",
+        cacheBust: true,
+      });
+      download(dataUrl, "heart_qr.png"); // tải về
+    } catch (err) {
+      console.error("Export QR failed:", err);
+    }
+  };
 
   return (
-    <div className={`flex overflow-hidden relative flex-col items-center bg-transparent w-[450px] h-[600px]`}>
-      <div className={`relative w-[450px] h-[450px] rotate-[0.625turn] scale-75`}>
-        {/* Top left */}
-        <QRCodeSVG
-          value={data}
-          size={size}
-          bgColor="#ffffff"
-          fgColor="#000000"
-          className='absolute rounded-[50%] right-3 border-[1px] border-solid border-primary'
-        />
+    <>
+      <div className={`flex overflow-hidden relative flex-col items-center w-full bg-transparent md:w-[450px] h-[600px]`}>
+        <div ref={wrapperRef} className={`relative w-[450px] h-[450px] rotate-[0.625turn] scale-75`}>
+          {/* Top left */}
+          <QRCodeCanvas
+            value={data}
+            size={size}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            className='absolute rounded-[50%] right-3 border-[1px] border-solid border-primary' />
 
-        {/* Top right */}
-        <QRCodeSVG
-          value={data}
-          size={size}
-          bgColor="#ffffff"
-          fgColor="#000000"
-          className='absolute rounded-[50%] bottom-3 border-[1px] border-solid border-primary'
-        />
+          {/* Top right */}
+          <QRCodeCanvas
+            value={data}
+            size={size}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            className='absolute rounded-[50%] bottom-3 border-[1px] border-solid border-primary' />
 
-        {/* QR code */}
-        <QRCodeSVG
-          value={data}
-          size={size}
-          bgColor="#ffffff"
-          fgColor="#000000"
-          className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px]`}
-        />
+          {/* QR code */}
+          <QRCodeCanvas
+            value={data}
+            size={size}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            className={`absolute top-0 left-0 z-auto w-[${size}px] h-[${size}px]`} />
+        </div>
       </div>
 
-      {/* <div className='mt-4 text-lg text-primary'>
-        {text}
-      </div> */}
-    </div>
+      <Button onClick={handleDownload}>
+        Download QRcode
+      </Button>
+    </>
   );
 };
 
