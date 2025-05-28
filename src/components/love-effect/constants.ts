@@ -8,7 +8,7 @@ export const FLOOR_Y = -15;
 
 export const MESSAGES_DEFAULT = [
   "Always by my side ❤️",
-  "Happy 1‑Year!",
+  "Happy 1-Year!",
   "Love you 3000",
   "Cảm ơn vì đã ở đây",
   "Anh yêu bé",
