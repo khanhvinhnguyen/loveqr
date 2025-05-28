@@ -20,7 +20,7 @@ export default function Hearts({ count = 30 }: HeartsProps) {
         position: spawnPosition(),
         velocity: spawnVelocity(),
         scale: 0.003 + Math.random() * 0.005,
-        spin: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 1),
+        spin: (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 2),
       })),
     [count]
   );
