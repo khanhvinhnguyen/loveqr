@@ -66,7 +66,7 @@ export default function MainScreen() {
   }
 
   return (
-    <div className="container p-4 mx-auto">
+    <div className="max-w-5xl p-4 mx-auto">
       <h1 className="mb-4 text-xl font-bold">Generate LoveQR</h1>
 
       <label className="block mb-2">Lời nhắn (mỗi dòng 1 lời nhắn nhé)</label>

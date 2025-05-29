@@ -29,12 +29,9 @@ const NavBar = () => {
           <h1 className="text-2xl font-bold">LoveQR</h1>
         </Link>
 
-        <div className="flex items-center">
-
-
+        <div className="flex items-center gap-2">
           <Dialog>
             <DialogTrigger>
-              <div className='flex items-center gap-2'>
                 <div className='flex border-2 rounded-sm p-2'>
                   <Image
                     src="/icons/buyMeACoffee.png"
@@ -46,12 +43,6 @@ const NavBar = () => {
                   />
                   <span className="hidden md:block ml-2">Buy me a coffee</span>
                 </div>
-
-                <Link href="https://forms.gle/uqzXQTB8rqnGrwod7" target="_blank" className='flex border-2 rounded-sm p-2'>
-                  <MessageCircleHeart />
-                  <span className="hidden md:block ml-2">Đóng góp ý kiến chung</span>
-                </Link>
-              </div>
             </DialogTrigger>
             <DialogContent className='bg-pink-100'>
               <DialogHeader>
@@ -72,6 +63,11 @@ const NavBar = () => {
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          <Link href="https://forms.gle/uqzXQTB8rqnGrwod7" target="_blank" className='flex border-2 rounded-sm p-2'>
+            <MessageCircleHeart />
+            <span className="hidden md:block ml-2">Đóng góp ý kiến chung</span>
+          </Link>
 
         </div>
       </div>
