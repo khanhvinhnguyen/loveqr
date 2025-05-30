@@ -180,10 +180,10 @@ export default function MainScreen() {
       </div>
 
       <div className="flex gap-4">
-      {generateURL && <HeartShapedQRCode
+      {/* {generateURL && <HeartShapedQRCode
         data={generateURL || 'https://google.com'}
         size={300}
-      />}
+      />} */}
 
       {generateURLCanva && <HeartMaskQRCodeCanva
         data={generateURLCanva || 'https://google.com'}
