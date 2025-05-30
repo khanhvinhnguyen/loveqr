@@ -30,6 +30,7 @@
     "lucide-react": "^0.511.0",
     "lz-string": "^1.5.0",
     "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "r3f-perf": "^7.2.1",
     "react-intl-universal": "^2.11.1",
     "tailwind-merge": "^3.3.0",
