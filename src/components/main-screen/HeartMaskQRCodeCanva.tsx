@@ -131,7 +131,7 @@ const HeartMaskQRCode = ({
       />
 
       {imageSrc && (
-        <div className="relative w-[450px] h-[450px] mb-4">
+        <div className="relative w-full md:w-[450px] md:h-[450px] mb-4">
           <Image
             src={imageSrc}
             alt="QR Code hình trái tim"
