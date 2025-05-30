@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import download from "downloadjs";
 import { Button } from "@/components/ui/button";
 import { Download } from 'lucide-react';
+import Image from "next/image";
 
 interface HeartMaskQRCodeProps {
   data?: string;
@@ -46,7 +47,7 @@ const HeartMaskQRCode = ({
 
     const loadImage = (src: string): Promise<HTMLImageElement> => {
       return new Promise((resolve) => {
-        const img = new Image();
+        const img = new window.Image(qrSize, qrSize);
         img.src = src;
         img.onload = () => resolve(img);
       });
@@ -63,6 +64,8 @@ const HeartMaskQRCode = ({
     // Áp dụng rotate + scale + translate toàn bộ
     ctx.translate(canvas.width / 2, canvas.height / 2); // Dịch tâm đến giữa canvas
     ctx.scale(0.75, 0.75); // scale(0.75)
+    ctx.rotate(0.625 * Math.PI * 2); // rotate(0.625turn)
+    ctx.translate(8 * 16, 8 * 16); // translate(8rem, 8rem) ≈ 128px
 
     // Vẽ ảnh 1: Top Left - vuông, không bo tròn
     ctx.drawImage(img1, -qrSize, -qrSize, qrSize, qrSize);
@@ -101,8 +104,6 @@ const HeartMaskQRCode = ({
     ctx.stroke();
     ctx.restore();
 
-    ctx.rotate(0.625 * Math.PI * 2); // rotate(0.625turn)
-    ctx.translate(8 * 16, 8 * 16); // translate(8rem, 8rem) ≈ 128px
 
     ctx.restore(); // khôi phục trạng thái ban đầu
 
@@ -131,10 +132,12 @@ const HeartMaskQRCode = ({
 
       {imageSrc && (
         <div className="relative w-[450px] h-[450px] mb-4">
-          <img
+          <Image
             src={imageSrc}
             alt="QR Code hình trái tim"
             className="w-full h-full object-contain"
+            width={canvasSize}
+            height={canvasSize}
           />
         </div>
       )}

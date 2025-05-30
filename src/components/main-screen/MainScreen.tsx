@@ -5,7 +5,7 @@ import LZString from 'lz-string'
 import { v7 } from 'uuid'
 import { Eye, QrCode } from 'lucide-react'
 
-import HeartShapedQRCode from './HeartShapedQRCode'
+// import HeartShapedQRCode from './HeartShapedQRCode'
 import { Payload } from '@/types/generateQRcode'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -29,7 +29,7 @@ export default function MainScreen() {
     heartCount: HEART_COUNT,
     follow: false
   })
-  const [generateURL, setGenerateURL] = useState<string>('')
+  // const [generateURL, setGenerateURL] = useState<string>('')
   const [generateURLCanva, setGenerateURLCanva] = useState<string>('')
   const disable = note.trim().length === 0
 
@@ -58,7 +58,7 @@ export default function MainScreen() {
 
     const cipher = encryptPayload(payload)
     const url = `/loveqr?data=${encodeURIComponent(cipher)}`
-    setGenerateURL(`${BASE_URL}${url}`)
+    // setGenerateURL(`${BASE_URL}${url}`)
     setGenerateURLCanva(`${BASE_URL}${url}`)
   }
 
