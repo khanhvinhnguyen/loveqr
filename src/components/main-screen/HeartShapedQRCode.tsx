@@ -32,7 +32,7 @@ const HeartMaskQRCode = ({
   };
 
   return (
-    <>
+    <div>
       <div className={`flex overflow-hidden relative flex-col items-center w-full bg-transparent md:w-[450px] h-[450px]`}>
         <div
           ref={wrapperRef}
@@ -47,7 +47,7 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className='absolute rounded-[50%] right-3 border-[5px] border-solid border-white' />
+            className='absolute rounded-[50%] right-0 border-[5px] border-solid border-white' />
 
           {/* Top right */}
           <QRCodeCanvas
@@ -55,7 +55,7 @@ const HeartMaskQRCode = ({
             size={size}
             bgColor="#ffffff"
             fgColor="#000000"
-            className='absolute rounded-[50%] bottom-3 border-[5px] border-solid border-white' />
+            className='absolute rounded-[50%] bottom-0 border-[5px] border-solid border-white' />
 
           {/* QR code */}
           <QRCodeCanvas
@@ -72,7 +72,7 @@ const HeartMaskQRCode = ({
         <Download />
         Download QRcode
       </Button>
-    </>
+    </div>
   );
 };
 

@@ -1,9 +1,8 @@
-// src/components/love-effect/FallingTextField.tsx
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Billboard, Text } from "@react-three/drei";
-import { FLOOR_Y, spawnPosition, spawnVelocity } from "./constants";
+import { FLOOR_Y, spawnPosition, spawnVelocity, TEXT_COUNT } from "./constants";
 
 const randomNeonColor = () => {
   const t = Math.random();
@@ -11,11 +10,13 @@ const randomNeonColor = () => {
 };
 
 export default function FallingTextField({
-  count = 17,
+  count = TEXT_COUNT,
   messages,
+  follow = false,
 }: {
   count?: number;
   messages: string[];
+  follow?: boolean;
 }) {
   const items = useMemo(
     () =>
@@ -58,7 +59,7 @@ export default function FallingTextField({
             if (el) refs.current[idx] = el;
           }}
           position={it.position.toArray()}
-          follow
+          follow={follow}
         >
           <Text
             fontSize={it.fontSize}

@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, Billboard } from "@react-three/drei";
-import { FLOOR_Y, spawnPosition, spawnVelocity } from "./constants";
+import { FLOOR_Y, HEART_COUNT, spawnPosition, spawnVelocity } from "./constants";
 
 const HEART_URL = "/models/heart.glb";
 useGLTF.preload(HEART_URL);
@@ -11,7 +11,7 @@ interface HeartsProps {
   count?: number;
 }
 
-export default function Hearts({ count = 30 }: HeartsProps) {
+export default function Hearts({ count = HEART_COUNT }: HeartsProps) {
   const { scene: heartModel } = useGLTF(HEART_URL);
 
   const hearts = useMemo(

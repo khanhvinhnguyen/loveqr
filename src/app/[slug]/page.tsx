@@ -5,7 +5,7 @@ import CryptoJS from 'crypto-js'
 import LZString from 'lz-string'
 import { useSearchParams } from 'next/navigation'
 
-const LoveEffect = dynamic(() => import('@/components/LoveEffect'), { ssr: false })
+const LoveEffect = dynamic(() => import('@/components/love-effect/LoveEffect'), { ssr: false })
 
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!
 
@@ -14,6 +14,11 @@ export default function LoveQRPage() {
   const cipher = searchParams.get('data')
 
   const [content, setContent] = useState<string[]>([])
+  const [setting, setSetting] = useState({
+    starsBackground: true,
+    textCount: 50,
+    heartCount: 30
+  })
 
   useEffect(() => {
     if (!cipher) {
@@ -27,8 +32,11 @@ export default function LoveQRPage() {
       const decompressed = LZString.decompressFromEncodedURIComponent(bytes.toString(CryptoJS.enc.Utf8))
       const payload = JSON.parse(decompressed)
 
-      const { note, review, token } = payload
+      const { note, review, token, setting } = payload
       const storedToken = localStorage.getItem('deviceToken')
+      if (setting) {
+        setSetting(setting)
+      }
 
       if (review && token !== storedToken) {
         alert("Bạn không có quyền truy cập nội dung này.")
@@ -46,7 +54,7 @@ export default function LoveQRPage() {
 
   return (
     <div className="w-full h-screen">
-      <LoveEffect messages={content} />
+      <LoveEffect messages={content} setting={setting}/>
     </div>
   )
 }
