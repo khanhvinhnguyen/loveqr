@@ -1,4 +1,3 @@
-// src/components/main-screen/HeartMaskQRCode.tsx
 import React, { useRef, useEffect } from "react";
 import QRCode from "qrcode";
 import download from "downloadjs";
@@ -8,7 +7,7 @@ import Image from "next/image";
 
 interface HeartMaskQRCodeProps {
   data?: string;
-  qrSize?: number; // Mặc định là 300
+  qrSize?: number;
 }
 
 const HeartMaskQRCode = ({
@@ -18,9 +17,8 @@ const HeartMaskQRCode = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [imageSrc, setImageSrc] = React.useState<string | null>(null);
 
-  const canvasSize = qrSize * 1.5; // 450px nếu qrSize=300
+  const canvasSize = qrSize * 1.5;
 
-  // Hàm tạo base64 QR từ dữ liệu
   const generateQRBase64 = async (text: string): Promise<string> => {
     const qrDataUrl = await QRCode.toDataURL(text, {
       width: qrSize,
