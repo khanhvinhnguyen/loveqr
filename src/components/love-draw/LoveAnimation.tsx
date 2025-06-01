@@ -71,6 +71,25 @@ export default function LoveAnimation({
     if (!text) return;
   }, [currentText, maxWidthRatio]);
 
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  
+  useEffect(() => {
+    setDimensions({
+      width: window.innerWidth * 0.7,
+      height: window.innerHeight * 0.7
+    });
+    
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth * 0.7,
+        height: window.innerHeight * 0.7
+      });
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="relative flex items-center justify-center w-full h-screen overflow-hidden bg-gradient-to-b from-rose-300 to-rose-200">
       <motion.svg
@@ -122,8 +141,8 @@ export default function LoveAnimation({
       <AnimatePresence mode="wait">
         <motion.svg
           key={`heart-${idx}`}
-          width={window.innerWidth * 0.7}
-          height={window.innerHeight * 0.7}
+          width={dimensions.width}
+          height={dimensions.height}
           viewBox="0 0 380 340"
           className="absolute"
           initial={{ strokeDashoffset: 1700 }}

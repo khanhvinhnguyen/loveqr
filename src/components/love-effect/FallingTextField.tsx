@@ -81,7 +81,7 @@ export default function FallingTextField({
         const basic = m as THREE.MeshBasicMaterial;
         if (basic.color) basic.color.copy(c);
       }
-      (txt as any).outlineColor = c;
+      (txt as THREE.Mesh & { outlineColor: THREE.Color }).outlineColor = c;
     }
   });
 

@@ -1,10 +1,12 @@
-import LoveAnimation from '@/components/love-draw/LoveAnimation';
+import dynamic from 'next/dynamic';
+
+const LoveAnimation = dynamic(() => import('@/components/love-draw/LoveAnimation'),{ ssr: false });
 
 const LoveAnimationPage = () => {
   return (
     <LoveAnimation
-      texts={['i love you', 'you are my sunshine', 'forever & always']} // mảng câu
-      cycleInterval={7}   // 7 giây đổi câu
+      texts={['i love you', 'you are my sunshine', 'forever & always']}
+      cycleInterval={7}
     />
   );
 }
