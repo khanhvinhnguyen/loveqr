@@ -9,9 +9,10 @@ useGLTF.preload(HEART_URL);
 
 interface HeartsProps {
   count?: number;
+  follow?: boolean,
 }
 
-export default function Hearts({ count = HEART_COUNT }: HeartsProps) {
+export default function Hearts({ count = HEART_COUNT, follow = false }: HeartsProps) {
   const { scene: heartModel } = useGLTF(HEART_URL);
 
   const hearts = useMemo(
@@ -56,6 +57,7 @@ export default function Hearts({ count = HEART_COUNT }: HeartsProps) {
             if (el) billRefs.current[i] = el;
           }}
           position={h.position.toArray()}
+          follow={follow}
         >
           <primitive
             object={heartModel.clone(true)}

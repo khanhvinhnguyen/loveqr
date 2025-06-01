@@ -27,7 +27,8 @@ export default function MainScreen() {
     starsBackground: true,
     textCount: TEXT_COUNT,
     heartCount: HEART_COUNT,
-    follow: false
+    follow: false,
+    syncColors: true,
   })
   // const [generateURL, setGenerateURL] = useState<string>('')
   const [generateURLCanva, setGenerateURLCanva] = useState<string>('')
@@ -57,7 +58,7 @@ export default function MainScreen() {
     const payload = { note: lines }
 
     const cipher = encryptPayload(payload)
-    const url = `/loveqr?data=${encodeURIComponent(cipher)}`
+    const url = `/falling-text/loveqr?data=${encodeURIComponent(cipher)}`
     // setGenerateURL(`${BASE_URL}${url}`)
     setGenerateURLCanva(`${BASE_URL}${url}`)
   }
@@ -78,7 +79,7 @@ export default function MainScreen() {
     }
 
     const cipher = encryptPayload(payload)
-    const url = `/loveqr?data=${encodeURIComponent(cipher)}`
+    const url = `/falling-text/loveqr?data=${encodeURIComponent(cipher)}`
 
     window.open(url, '_blank')
   }
@@ -108,52 +109,60 @@ export default function MainScreen() {
       </section>
 
       <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
-        {/* Switch stars background */}
-        <label className="flex gap-2 items-center">
-          <p>Hiển thị nền sao</p>
-          <Switch
-            checked={setting.starsBackground}
-            onCheckedChange={(checked) => setSetting({ ...setting, starsBackground: checked })}
-          />
-        </label>
-
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-2 justify-between items-center'>
           <label>Số lượng lời nhắn</label>
           <Input
             type="number"
             min={TEXT_COUNT_MIN}
             max={TEXT_COUNT_MAX}
             value={setting.textCount}
-            onChange={e => setSetting({ 
-              ...setting, 
-              textCount: handleNumberInput(e.target.value, TEXT_COUNT_MIN, TEXT_COUNT_MAX) 
+            onChange={e => setSetting({
+              ...setting,
+              textCount: handleNumberInput(e.target.value, TEXT_COUNT_MIN, TEXT_COUNT_MAX)
             })}
             className="text-primary w-fit"
           />
         </div>
 
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-2 justify-between items-center'>
           <label>Số lượng trái tim</label>
           <Input
             type="number"
             min={HEART_COUNT_MIN}
             max={HEART_COUNT_MAX}
             value={setting.heartCount}
-            onChange={e => setSetting({ 
-              ...setting, 
-              heartCount: handleNumberInput(e.target.value, HEART_COUNT_MIN, HEART_COUNT_MAX) 
+            onChange={e => setSetting({
+              ...setting,
+              heartCount: handleNumberInput(e.target.value, HEART_COUNT_MIN, HEART_COUNT_MAX)
             })}
             className="text-primary w-fit"
           />
         </div>
+
+        {/* Switch stars background */}
+        <label className="flex gap-2 justify-between items-center">
+          <p>Hiển thị nền sao</p>
+          <Switch
+            checked={setting.starsBackground}
+            onCheckedChange={(checked) => setSetting({ ...setting, starsBackground: checked })}
+          />
+        </label>
       </section>
 
       <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
-        <label className="flex gap-2 items-center">
+        <label className="flex gap-2 justify-between items-center">
           <p>Lời nhắn luôn hướng về phía người nhìn</p>
           <Switch
             checked={setting.follow}
             onCheckedChange={(checked) => setSetting({ ...setting, follow: checked })}
+          />
+        </label>
+
+        <label className="flex gap-2 justify-between items-center">
+          <p>Màu đồng bộ</p>
+          <Switch
+            checked={setting.syncColors}
+            onCheckedChange={(checked) => setSetting({ ...setting, syncColors: checked })}
           />
         </label>
       </section>
@@ -180,15 +189,15 @@ export default function MainScreen() {
       </div>
 
       <div className="flex gap-4">
-      {/* {generateURL && <HeartShapedQRCode
+        {/* {generateURL && <HeartShapedQRCode
         data={generateURL || 'https://google.com'}
         size={300}
       />} */}
 
-      {generateURLCanva && <HeartMaskQRCodeCanva
-        data={generateURLCanva || 'https://google.com'}
-        qrSize={300}
-      />}
+        {generateURLCanva && <HeartMaskQRCodeCanva
+          data={generateURLCanva || 'https://google.com'}
+          qrSize={300}
+        />}
       </div>
     </div>
   )
