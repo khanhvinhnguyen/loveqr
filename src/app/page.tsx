@@ -19,7 +19,7 @@ export default function Home() {
         {/* ---------- Section 1: HardItems ---------- */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">
-            Những trang không custom
+            QR Yêu Sẵn, Quét Là Mê
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
@@ -27,7 +27,7 @@ export default function Home() {
               <Link
                 key={idx}
                 href={item.link}
-                className="block" 
+                className="block"
                 onMouseEnter={() => setHoveredHardIdx(idx)}
                 onMouseLeave={() => setHoveredHardIdx(null)}
               >
@@ -47,7 +47,7 @@ export default function Home() {
         {/* ---------- Section 2: CustomItems ---------- */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">
-            Những trang cho phép custom
+            QR Sáng Tác, Yêu Theo Cách Của Bạn
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
