@@ -1,14 +1,8 @@
-import dynamic from 'next/dynamic';
-
-const LoveAnimation = dynamic(() => import('@/components/love-draw/LoveAnimation'),{ ssr: false });
-
-const LoveAnimationPage = () => {
+const LoveDrawPage = () => {
   return (
-    <LoveAnimation
-      texts={['i love you', 'you are my sunshine', 'forever & always']}
-      cycleInterval={7}
-    />
-  );
+    <div>
+      <h1>Love Draw Page</h1>
+    </div>
+  )
 }
-
-export default LoveAnimationPage;
+export default LoveDrawPage
