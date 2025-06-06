@@ -5,6 +5,7 @@ import CryptoJS from 'crypto-js'
 import LZString from 'lz-string'
 import { useSearchParams } from 'next/navigation'
 
+import Wrapper3D from '@/components/Wrapper3D'
 const LoveEffect = dynamic(() => import('@/components/love-effect/LoveEffect'), { ssr: false })
 
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!
@@ -17,7 +18,8 @@ export default function LoveQRPage() {
   const [setting, setSetting] = useState({
     starsBackground: true,
     textCount: 50,
-    heartCount: 30
+    heartCount: 30,
+    syncColors: true,
   })
 
   useEffect(() => {
@@ -53,8 +55,8 @@ export default function LoveQRPage() {
   }, [cipher])
 
   return (
-    <div className="w-full h-screen">
+    <Wrapper3D musicSrc={'https://zingmp3.vn/embed/song/Z7E9OI09?start=true'}>
       <LoveEffect messages={content} setting={setting}/>
-    </div>
+    </Wrapper3D>
   )
 }

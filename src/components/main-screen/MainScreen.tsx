@@ -1,3 +1,4 @@
+// src/components/main-screen/MainScreen.tsx
 "use client"
 import React, { useState } from 'react'
 import CryptoJS from 'crypto-js'
@@ -12,6 +13,7 @@ import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { HEART_COUNT, TEXT_COUNT } from '../love-effect/constants'
 import HeartMaskQRCodeCanva from './HeartMaskQRCodeCanva'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_LOVEQR_URL}`!
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!
@@ -28,7 +30,7 @@ export default function MainScreen() {
     textCount: TEXT_COUNT,
     heartCount: HEART_COUNT,
     follow: false,
-    syncColors: true,
+    syncColors: true
   })
   // const [generateURL, setGenerateURL] = useState<string>('')
   const [generateURLCanva, setGenerateURLCanva] = useState<string>('')
@@ -97,6 +99,7 @@ export default function MainScreen() {
     <div className="p-4 mx-auto max-w-5xl">
       <h1 className="mb-4 text-xl font-bold">Generate LoveQR</h1>
 
+      {/* Nhập lời nhắn */}
       <section>
         <label className="block mb-2">Lời nhắn (mỗi dòng 1 lời nhắn nhé)</label>
         <textarea
@@ -108,65 +111,73 @@ export default function MainScreen() {
         />
       </section>
 
-      <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
-        <div className='flex gap-2 justify-between items-center'>
-          <label>Số lượng lời nhắn</label>
-          <Input
-            type="number"
-            min={TEXT_COUNT_MIN}
-            max={TEXT_COUNT_MAX}
-            value={setting.textCount}
-            onChange={e => setSetting({
-              ...setting,
-              textCount: handleNumberInput(e.target.value, TEXT_COUNT_MIN, TEXT_COUNT_MAX)
-            })}
-            className="text-primary w-fit"
-          />
-        </div>
+      {/* Accordion tuỳ chỉnh lời nhắn */}
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Tuỳ chỉnh riêng cho lời nhắn của bạn</AccordionTrigger>
+          <AccordionContent>
+            <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
+              <div className='flex gap-2 justify-between items-center'>
+                <label>Số lượng lời nhắn</label>
+                <Input
+                  type="number"
+                  min={TEXT_COUNT_MIN}
+                  max={TEXT_COUNT_MAX}
+                  value={setting.textCount}
+                  onChange={e => setSetting({
+                    ...setting,
+                    textCount: handleNumberInput(e.target.value, TEXT_COUNT_MIN, TEXT_COUNT_MAX)
+                  })}
+                  className="text-primary w-fit"
+                />
+              </div>
 
-        <div className='flex gap-2 justify-between items-center'>
-          <label>Số lượng trái tim</label>
-          <Input
-            type="number"
-            min={HEART_COUNT_MIN}
-            max={HEART_COUNT_MAX}
-            value={setting.heartCount}
-            onChange={e => setSetting({
-              ...setting,
-              heartCount: handleNumberInput(e.target.value, HEART_COUNT_MIN, HEART_COUNT_MAX)
-            })}
-            className="text-primary w-fit"
-          />
-        </div>
+              <div className='flex gap-2 justify-between items-center'>
+                <label>Số lượng trái tim</label>
+                <Input
+                  type="number"
+                  min={HEART_COUNT_MIN}
+                  max={HEART_COUNT_MAX}
+                  value={setting.heartCount}
+                  onChange={e => setSetting({
+                    ...setting,
+                    heartCount: handleNumberInput(e.target.value, HEART_COUNT_MIN, HEART_COUNT_MAX)
+                  })}
+                  className="text-primary w-fit"
+                />
+              </div>
 
-        {/* Switch stars background */}
-        <label className="flex gap-2 justify-between items-center">
-          <p>Hiển thị nền sao</p>
-          <Switch
-            checked={setting.starsBackground}
-            onCheckedChange={(checked) => setSetting({ ...setting, starsBackground: checked })}
-          />
-        </label>
-      </section>
+              <label className="flex gap-2 justify-between items-center">
+                <p>Hiển thị nền sao</p>
+                <Switch
+                  checked={setting.starsBackground}
+                  onCheckedChange={(checked) => setSetting({ ...setting, starsBackground: checked })}
+                />
+              </label>
+            </section>
 
-      <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
-        <label className="flex gap-2 justify-between items-center">
-          <p>Lời nhắn luôn hướng về phía người nhìn</p>
-          <Switch
-            checked={setting.follow}
-            onCheckedChange={(checked) => setSetting({ ...setting, follow: checked })}
-          />
-        </label>
+            <section className="flex flex-col gap-2 mb-2 ml-4 max-w-2xl md:flex-row md:justify-between">
+              <label className="flex gap-2 justify-between items-center">
+                <p>Lời nhắn luôn hướng về phía người nhìn</p>
+                <Switch
+                  checked={setting.follow}
+                  onCheckedChange={(checked) => setSetting({ ...setting, follow: checked })}
+                />
+              </label>
 
-        <label className="flex gap-2 justify-between items-center">
-          <p>Màu đồng bộ</p>
-          <Switch
-            checked={setting.syncColors}
-            onCheckedChange={(checked) => setSetting({ ...setting, syncColors: checked })}
-          />
-        </label>
-      </section>
+              <label className="flex gap-2 justify-between items-center">
+                <p>Màu đồng bộ</p>
+                <Switch
+                  checked={setting.syncColors}
+                  onCheckedChange={(checked) => setSetting({ ...setting, syncColors: checked })}
+                />
+              </label>
+            </section>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
+      {/* Gọi ActionButtons và truyền project */}
       <div className="flex gap-4">
         <Button
           className="px-4 py-2 rounded disabled:opacity-50"

@@ -12,9 +12,9 @@ export const CustomItems = [
     webp: "/images/images/falling-text.webp",
     gif: "/images/gif/falling-text.gif"
   },
-  {
-    link: "/love-draw",
-    webp: "/images/images/love-draw.webp",
-    gif: "/images/gif/love-draw.gif"
-  }
+  // {
+  //   link: "/love-draw",
+  //   webp: "/images/images/love-draw.webp",
+  //   gif: "/images/gif/love-draw.gif"
+  // }
 ];
