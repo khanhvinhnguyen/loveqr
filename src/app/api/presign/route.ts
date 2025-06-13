@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   try {
     const url = await getSignedUrl(s3, command, { expiresIn: 360 });
     return NextResponse.json({ url, key });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('presign error:', err);
     return NextResponse.json(
       { error: 'Failed to generate URL' },
