@@ -1,22 +1,19 @@
 // src/components/main-screen/MainScreen.tsx
 "use client"
-import React, { useState } from 'react'
-import CryptoJS from 'crypto-js'
-import LZString from 'lz-string'
-import { v7 } from 'uuid'
-import { Eye, QrCode } from 'lucide-react'
-
-// import HeartShapedQRCode from './HeartShapedQRCode'
-import { Payload } from '@/types/generateQRcode'
-import { Button } from '@/components/ui/button'
+import React, { useEffect, useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
-import { HEART_COUNT, TEXT_COUNT } from '../love-effect/constants'
-import HeartMaskQRCodeCanva from './HeartMaskQRCodeCanva'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { HEART_COUNT, TEXT_COUNT } from '@/components/love-effect/constants'
+import ActionButtons from '@/components/ActionButtons'
+import { useImageUpload } from '@/hooks/useImageUpload'
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_LOVEQR_URL}`!
-const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 
 const TEXT_COUNT_MIN = 25
 const TEXT_COUNT_MAX = 80
@@ -32,68 +29,44 @@ export default function MainScreen() {
     follow: false,
     syncColors: true
   })
-  // const [generateURL, setGenerateURL] = useState<string>('')
-  const [generateURLCanva, setGenerateURLCanva] = useState<string>('')
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+
+
   const disable = note.trim().length === 0
 
-  const getDeviceToken = () => {
-    let deviceToken = localStorage.getItem('deviceToken')
-    if (!deviceToken) {
-      deviceToken = v7()
-      localStorage.setItem('deviceToken', deviceToken)
-    }
-    return deviceToken
-  }
-
-  const encryptPayload = (payload: Payload) => {
-    const json = JSON.stringify(payload)
-    const compressed = LZString.compressToEncodedURIComponent(json)
-    return CryptoJS.AES.encrypt(compressed, SECRET_KEY).toString()
-  }
-
-  const handleGenerate = () => {
-    const lines = note
-      .split('\n')
-      .map(line => line.trim())
-      .filter(Boolean)
-
-    const payload = { note: lines }
-
-    const cipher = encryptPayload(payload)
-    const url = `/falling-text/loveqr?data=${encodeURIComponent(cipher)}`
-    // setGenerateURL(`${BASE_URL}${url}`)
-    setGenerateURLCanva(`${BASE_URL}${url}`)
-  }
-
-  const handleReview = () => {
-    const lines = note
-      .split('\n')
-      .map(line => line.trim())
-      .filter(Boolean)
-
-    const deviceToken = getDeviceToken()
-
-    const payload = {
-      note: lines,
-      token: deviceToken,
-      review: true,
-      setting: setting
-    }
-
-    const cipher = encryptPayload(payload)
-    const url = `/falling-text/loveqr?data=${encodeURIComponent(cipher)}`
-
-    window.open(url, '_blank')
-  }
-
-  // Hàm xử lý giới hạn giá trị
   const handleNumberInput = (value: string, min: number, max: number): number => {
-    const parsedValue = parseInt(value)
-    if (isNaN(parsedValue)) return min
-    if (parsedValue < min) return min
-    if (parsedValue > max) return max
-    return parsedValue
+    const parsed = parseInt(value)
+    if (isNaN(parsed)) return min
+    if (parsed < min) return min
+    if (parsed > max) return max
+    return parsed
   }
+
+  useEffect(() => {
+    return () => previews.forEach(URL.revokeObjectURL);
+  }, [previews]);
+
+  const handleFileSelect = (selectedFiles: File[]) => {
+    if (selectedFiles.length > 5) {
+      alert('Tối đa 5 ảnh được phép chọn');
+      return;
+    }
+    
+    setFiles(selectedFiles);
+    setPreviews(selectedFiles.map(f => URL.createObjectURL(f)));
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newFiles = files.filter((_, i) => i !== index);
+    const newPreviews = previews.filter((_, i) => i !== index);
+    
+    // Revoke URL for removed preview
+    URL.revokeObjectURL(previews[index]);
+    
+    setFiles(newFiles);
+    setPreviews(newPreviews);
+  };
 
   return (
     <div className="p-4 mx-auto max-w-5xl">
@@ -109,6 +82,68 @@ export default function MainScreen() {
           value={note}
           onChange={e => setNote(e.target.value)}
         />
+      </section>
+
+      <section>
+        <label className='block mb-2'>Chọn ảnh (tối đa 5 ảnh)</label>
+        <span className='flex gap-2 text-sm text-gray-600 mb-2'>
+          Ảnh sẽ được upload khi bạn click Generate QR Code
+        </span>
+        
+        <div className='flex flex-col gap-4'>
+          <div className='flex gap-2'>
+            <input
+              type="file"
+              id="file-input"
+              className="hidden"
+              accept="image/*"
+              multiple
+              onChange={e => {
+                const selected = Array.from(e.currentTarget.files || []);
+                handleFileSelect(selected);
+              }}
+            />
+
+            <label htmlFor="file-input" className="p-2 rounded border bg-background cursor-pointer hover:bg-gray-50">
+              Chọn ảnh
+            </label>
+
+            {files.length > 0 && (
+              <button
+                onClick={() => {
+                  setFiles([]);
+                  setPreviews([]);
+                }}
+                className="p-2 rounded border bg-gray-500 text-white hover:bg-gray-600"
+              >
+                Xóa tất cả
+              </button>
+            )}
+          </div>
+
+          {previews.length > 0 && (
+            <div className="mt-2">
+              <h4 className="text-sm font-medium mb-2">Ảnh đã chọn ({files.length}/5):</h4>
+              <div className="flex gap-2 overflow-x-auto">
+                {previews.map((src, i) => (
+                  <div key={i} className="relative">
+                    <img
+                      src={src}
+                      alt={`preview-${i}`}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(i)}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* Accordion tuỳ chỉnh lời nhắn */}
@@ -178,38 +213,13 @@ export default function MainScreen() {
       </Accordion>
 
       {/* Gọi ActionButtons và truyền project */}
-      <div className="flex gap-4">
-        <Button
-          className="px-4 py-2 rounded disabled:opacity-50"
-          disabled={disable}
-          onClick={handleGenerate}
-        >
-          <QrCode />
-          Generate
-        </Button>
-
-        <Button
-          className="px-4 py-2 rounded disabled:opacity-50"
-          variant="outline"
-          disabled={disable}
-          onClick={handleReview}
-        >
-          <Eye />
-          Review
-        </Button>
-      </div>
-
-      <div className="flex gap-4">
-        {/* {generateURL && <HeartShapedQRCode
-          data={generateURL || 'https://google.com'}
-          size={300}
-        />} */}
-
-        {generateURLCanva && <HeartMaskQRCodeCanva
-          data={generateURLCanva || 'https://google.com'}
-          qrSize={300}
-        />}
-      </div>
+      <ActionButtons
+        note={note}
+        setting={setting}
+        files={files}
+        disabled={disable}
+        project="falling-text"
+      />
     </div>
   )
 }
