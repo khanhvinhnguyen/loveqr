@@ -1,11 +1,10 @@
 // src/components/main-screen/MainScreen.tsx
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { HEART_COUNT, TEXT_COUNT } from '@/components/love-effect/constants'
 import ActionButtons from '@/components/ActionButtons'
-import { useImageUpload } from '@/hooks/useImageUpload'
 
 import {
   Accordion,
@@ -29,8 +28,8 @@ export default function MainScreen() {
     follow: false,
     syncColors: true
   })
-  const [files, setFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
+  // const [files, setFiles] = useState<File[]>([]);
+  // const [previews, setPreviews] = useState<string[]>([]);
 
 
   const disable = note.trim().length === 0
@@ -43,30 +42,30 @@ export default function MainScreen() {
     return parsed
   }
 
-  useEffect(() => {
-    return () => previews.forEach(URL.revokeObjectURL);
-  }, [previews]);
+  // useEffect(() => {
+  //   return () => previews.forEach(URL.revokeObjectURL);
+  // }, [previews]);
 
-  const handleFileSelect = (selectedFiles: File[]) => {
-    if (selectedFiles.length > 5) {
-      alert('Tối đa 5 ảnh được phép chọn');
-      return;
-    }
+  // const handleFileSelect = (selectedFiles: File[]) => {
+  //   if (selectedFiles.length > 5) {
+  //     alert('Tối đa 5 ảnh được phép chọn');
+  //     return;
+  //   }
     
-    setFiles(selectedFiles);
-    setPreviews(selectedFiles.map(f => URL.createObjectURL(f)));
-  };
+  //   setFiles(selectedFiles);
+  //   setPreviews(selectedFiles.map(f => URL.createObjectURL(f)));
+  // };
 
-  const handleRemoveImage = (index: number) => {
-    const newFiles = files.filter((_, i) => i !== index);
-    const newPreviews = previews.filter((_, i) => i !== index);
+  // const handleRemoveImage = (index: number) => {
+  //   const newFiles = files.filter((_, i) => i !== index);
+  //   const newPreviews = previews.filter((_, i) => i !== index);
     
-    // Revoke URL for removed preview
-    URL.revokeObjectURL(previews[index]);
+  //   // Revoke URL for removed preview
+  //   URL.revokeObjectURL(previews[index]);
     
-    setFiles(newFiles);
-    setPreviews(newPreviews);
-  };
+  //   setFiles(newFiles);
+  //   setPreviews(newPreviews);
+  // };
 
   return (
     <div className="p-4 mx-auto max-w-5xl">
@@ -84,7 +83,7 @@ export default function MainScreen() {
         />
       </section>
 
-      <section>
+      {/* <section>
         <label className='block mb-2'>Chọn ảnh (tối đa 5 ảnh)</label>
         <span className='flex gap-2 text-sm text-gray-600 mb-2'>
           Ảnh sẽ được upload khi bạn click Generate QR Code
@@ -144,7 +143,7 @@ export default function MainScreen() {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* Accordion tuỳ chỉnh lời nhắn */}
       <Accordion type="single" collapsible>
@@ -216,7 +215,7 @@ export default function MainScreen() {
       <ActionButtons
         note={note}
         setting={setting}
-        files={files}
+        // files={files}
         disabled={disable}
         project="falling-text"
       />
