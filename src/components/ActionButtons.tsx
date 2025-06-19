@@ -1,10 +1,11 @@
 // src/components/ActionButtons.tsx
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import CryptoJS from "crypto-js";
 import LZString from "lz-string";
 import { v7 } from "uuid";
-import { Eye, QrCode } from "lucide-react";
+import { Eye, QrCode, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -39,7 +40,7 @@ export default function ActionButtons({
   const [shape, setShape] = useState<"heart" | "square">("heart");
   const [eyeShape, setEyeShape] = useState<"dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded">("square");
   const [generateURL, setGenerateURL] = useState("");
-  // const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const getDeviceToken = () => {
     let t = localStorage.getItem("deviceToken");
@@ -64,16 +65,16 @@ export default function ActionButtons({
     eyeShape,
   });
 
-  // const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     setUploadedFiles(Array.from(files));
-  //   }
-  // };
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      setUploadedFiles(Array.from(files));
+    }
+  };
 
-  // const removeFile = (index: number) => {
-  //   setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-  // };
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleGenerate = async () => {
     const lines = note.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -149,25 +150,25 @@ export default function ActionButtons({
             </div>
 
             {/* Upload ảnh - chỉ hiển thị khi shape là square */}
-            {/* {shape === "square" && (
+            {shape === "square" && (
               <div className="ml-2 space-y-4">
-                                 <div className="flex items-center gap-2">
-                   <span className="font-medium">Upload Background Image:</span>
-                   <div className="relative inline-block">
-                     <input
-                       type="file"
-                       accept="image/*"
-                       multiple
-                       onChange={handleFileUpload}
-                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                       id="file-upload"
-                     />
-                     <Button variant="outline" size="sm" type="button" className="relative">
-                       <Upload className="w-4 h-4 mr-2" />
-                       Chọn ảnh
-                     </Button>
-                   </div>
-                 </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">Upload Background Image:</span>
+                  <div className="relative inline-block">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      id="file-upload"
+                    />
+                    <Button variant="outline" size="sm" type="button" className="relative">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Chọn ảnh
+                    </Button>
+                  </div>
+                </div>
 
                 {uploadedFiles.length > 0 && (
                   <div className="space-y-2">
@@ -176,13 +177,13 @@ export default function ActionButtons({
                       {uploadedFiles.map((file, index) => (
                         <div key={index} className="relative inline-block">
                           <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-2 pr-8">
-                                                         <Image
-                               src={URL.createObjectURL(file)}
-                               alt={file.name}
-                               className="w-12 h-12 object-cover rounded"
-                               width={48}
-                               height={48}
-                             />
+                            <Image
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-12 h-12 object-cover rounded"
+                              width={48}
+                              height={48}
+                            />
                             <div className="flex flex-col">
                               <span className="text-sm font-medium truncate max-w-32">
                                 {file.name}
@@ -210,23 +211,23 @@ export default function ActionButtons({
               <div className="p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded ml-2">
                 Lưu ý: Ảnh upload chỉ áp dụng cho QR code hình vuông
               </div>
-            )} */}
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
       {/* Action Buttons */}
       <div className="flex gap-4">
-        <Button 
-          disabled={disabled} 
+        <Button
+          disabled={disabled}
           onClick={handleGenerate}
         >
-          <QrCode className="mr-2" /> 
+          <QrCode className="mr-2" />
           Generate
         </Button>
-        <Button 
-          variant="outline" 
-          disabled={disabled} 
+        <Button
+          variant="outline"
+          disabled={disabled}
           onClick={handleReview}
         >
           <Eye className="mr-2" /> Review
@@ -250,10 +251,10 @@ export default function ActionButtons({
           qrSize={300}
           qrOptions={{
             ...buildQrOptions(),
-            // ...(uploadedFiles.length > 0 && { 
-            //   hasUploadedImages: true,
-            //   uploadedFile: uploadedFiles[0] // Truyền file trực tiếp thay vì URL
-            // })
+            ...(uploadedFiles.length > 0 && { 
+              hasUploadedImages: true,
+              uploadedFile: uploadedFiles[0] // Truyền file trực tiếp thay vì URL
+            })
           }}
         />
       )}

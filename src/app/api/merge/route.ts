@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { mkdtemp, writeFile, unlink, readFile } from "fs/promises";
 import path from "path";
 
-export const runtime = "nodejs";         // bảo đảm chạy Node (không edge)
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   const form = await req.formData();
@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Need qr & bg files" }, { status: 400 });
   }
 
-  // ----- ghi file tạm -----
   const dir = await mkdtemp(path.join(tmpdir(), "qrmerge-"));
   const qrPath = path.join(dir, "qr.png");
   const bgPath = path.join(dir, "bg");
@@ -27,7 +26,6 @@ export async function POST(req: NextRequest) {
     writeFile(bgPath, Buffer.from(await bgFile.arrayBuffer())),
   ]);
 
-  // ----- gọi Python -----
   const pyArgs = [
     path.join(process.cwd(), "scripts", "merge_qr_bg.py"),
     qrPath,

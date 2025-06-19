@@ -3,10 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import QRCodeStyling from "qr-code-styling";
+import Image from "next/image";
 
-/* -------------------------------------------------- utils */
-
-/* -------------------------------------------------- props */
 interface SquareQRCodeProps {
   data?: string;
   qrSize?: number;
@@ -20,7 +18,6 @@ interface SquareQRCodeProps {
   };
 }
 
-/* ========================================================== */
 const SquareQRCode = ({
   data = "https://example.com",
   qrSize = 300,
@@ -29,8 +26,8 @@ const SquareQRCode = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const qrCodeRef = useRef<QRCodeStyling | null>(null);
   const [ready, setReady] = useState(false);
+  const [mergedImage, setMergedImage] = useState<string | null>(null);
 
-  /* ---------- merge defaults ---------- */
   const defaults = {
     color: { color: "#FF0000", background: "#ffffff" },
     eyeShape: "square" as const,
@@ -47,7 +44,6 @@ const SquareQRCode = ({
     uploadedFile: qrOptions.uploadedFile,
   };
 
-  /* ---------- map eye shapes to qr-code-styling types ---------- */
   const getCornerSquareType = (eyeShape: string) => {
     switch (eyeShape) {
       case "dots": return "dot";
@@ -84,23 +80,19 @@ const SquareQRCode = ({
     }
   };
 
-  /* ---------- create QR code with qr-code-styling ---------- */
   useEffect(() => {
     if (!containerRef.current) return;
 
     let cancelled = false;
-    
+
     (async () => {
       try {
-        // Dynamic import để tránh SSR issues
         const { default: QRCodeStyling } = await import("qr-code-styling");
-        
+
         if (cancelled) return;
 
-        // Clear previous QR code
         containerRef.current!.innerHTML = "";
-        
-        // Create QR code instance
+
         qrCodeRef.current = new QRCodeStyling({
           width: qrSize,
           height: qrSize,
@@ -134,13 +126,10 @@ const SquareQRCode = ({
           },
         });
 
-        // Append to container
         if (containerRef.current) {
           qrCodeRef.current.append(containerRef.current);
         }
-        
-        // Canvas is ready for use
-        
+
         if (!cancelled) {
           setReady(true);
         }
@@ -154,14 +143,11 @@ const SquareQRCode = ({
     };
   }, [data, qrSize, merged.color, merged.eyeShape, merged.hasUploadedImages]);
 
-  /* ---------- download logic ---------- */
-  const handleDownload = async () => {
-    if (!qrCodeRef.current) return;
-
-    try {
-              // Nếu có uploaded images, gọi API merge
-        if (merged.hasUploadedImages && merged.uploadedFile) {
-          // Tạo blob từ QR code
+  // Auto merge QR with background image when uploaded
+  useEffect(() => {
+    const autoMerge = async () => {
+      if (merged.hasUploadedImages && merged.uploadedFile && qrCodeRef.current && ready) {
+        try {
           const canvas = containerRef.current?.querySelector("canvas");
           if (!canvas) return;
           
@@ -171,7 +157,6 @@ const SquareQRCode = ({
           
           if (!qrBlob) return;
 
-          // Sử dụng trực tiếp uploaded file làm background
           const fd = new FormData();
           fd.append("qr", qrBlob, "qr.png");
           fd.append("bg", merged.uploadedFile, "bg");
@@ -179,20 +164,34 @@ const SquareQRCode = ({
 
           const resp = await fetch("/api/merge", { method: "POST", body: fd });
           if (!resp.ok) {
-            const { error } = await resp.json();
-            console.error("merge error:", error);
+            console.error("merge error");
             return;
           }
 
           const blob = await resp.blob();
           const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "square_qr_with_background.png";
-          a.click();
-          URL.revokeObjectURL(url);
+          setMergedImage(url);
+        } catch (error) {
+          console.error("Auto merge error:", error);
+        }
       } else {
-        // Download trực tiếp QR code
+        setMergedImage(null);
+      }
+    };
+
+    autoMerge();
+  }, [merged.hasUploadedImages, merged.uploadedFile, ready, qrSize]);
+
+    const handleDownload = async () => {
+    try {
+      if (mergedImage) {
+        // Download merged image
+        const a = document.createElement("a");
+        a.href = mergedImage;
+        a.download = "square_qr_with_background.png";
+        a.click();
+      } else if (qrCodeRef.current) {
+        // Download QR code only
         await qrCodeRef.current.download({
           name: "square_qr",
           extension: "png"
@@ -203,37 +202,35 @@ const SquareQRCode = ({
     }
   };
 
-  /* ---------- UI ---------- */
-  return (
-    <div className="flex flex-col items-center gap-4">
-      {/* QR Code Preview Container */}
-      <div className="relative">
-        {merged.hasUploadedImages && merged.uploadedFile && (
-          <div
-            className="absolute inset-0 z-0"
-            style={{
-              width: qrSize,
-              height: qrSize,
-              backgroundImage: `url(${URL.createObjectURL(merged.uploadedFile)})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              borderRadius: "12px",
-            }}
-          />
+      return (
+      <div className="flex flex-col items-center gap-4">
+        {/* Hiển thị merged image nếu có ảnh, nếu không hiển thị QR thường */}
+        {mergedImage ? (
+          <div className="relative">
+            <Image
+              src={mergedImage}
+              alt="QR Code with background"
+              width={qrSize}
+              height={qrSize}
+              className="rounded-lg"
+            />
+          </div>
+        ) : (
+          <div className="relative">
+            <div 
+              ref={containerRef} 
+              className="relative z-10"
+              style={{ width: qrSize, height: qrSize }} 
+            />
+          </div>
         )}
-        <div 
-          ref={containerRef} 
-          className="relative z-10"
-          style={{ width: qrSize, height: qrSize }} 
-        />
-      </div>
 
-      <Button disabled={!ready} onClick={handleDownload}>
-        <Download className="mr-2" /> 
-        Download QR code {merged.hasUploadedImages ? "(với background)" : ""}
-      </Button>
-    </div>
-  );
+        <Button disabled={!ready} onClick={handleDownload}>
+          <Download className="mr-2" /> 
+          Download QR code {merged.hasUploadedImages ? "(với background)" : ""}
+        </Button>
+      </div>
+    );
 };
 
 export default SquareQRCode;
