@@ -14,7 +14,7 @@ interface HeartMaskQRCodeProps {
 }
 
 const HeartMaskQRCode = ({
-  data = 'https://example.com', 
+  data = 'https://example.com',
   qrSize = 300,
   qrOptions = {
     color: {
@@ -30,6 +30,7 @@ const HeartMaskQRCode = ({
   const canvasSize = qrSize * 1.5;
 
   const drawHeartQR = React.useCallback(async () => {
+    const strokeStyle = qrOptions.color?.background || "#ffffff";
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -60,57 +61,35 @@ const HeartMaskQRCode = ({
 
     ctx.save();
 
-    // Áp dụng rotate + scale + translate toàn bộ
     ctx.translate(canvas.width / 2, canvas.height / 2); // Dịch tâm đến giữa canvas
     ctx.scale(0.75, 0.75); // scale(0.75)
     ctx.rotate(0.625 * Math.PI * 2); // rotate(0.625turn)
     ctx.translate(8 * 16, 8 * 16); // translate(8rem, 8rem) ≈ 128px
 
-    // Vẽ ảnh 1: Top Left - vuông, không bo tròn
     ctx.drawImage(img1, -qrSize, -qrSize, qrSize, qrSize);
 
-    // Vẽ viền trắng cho ảnh 1
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = strokeStyle;
     ctx.strokeRect(-qrSize, -qrSize, qrSize, qrSize);
 
     // Vẽ ảnh 2: Top Right - bo tròn
     ctx.save();
-
-    // Tạo vùng clip là nửa phải hình tròn
     ctx.beginPath();
-    ctx.moveTo(0, -qrSize / 2); // bắt đầu từ đỉnh
-    ctx.arc(0, -qrSize / 2, qrSize / 2, Math.PI * 0.5, Math.PI * 1.5, true); // nửa phải
+    ctx.moveTo(0, -qrSize / 2);
+    ctx.arc(0, -qrSize / 2, qrSize / 2, Math.PI * 0.5, Math.PI * 1.5, true);
     ctx.closePath();
     ctx.clip();
-    
     ctx.drawImage(img2, 0, -qrSize, qrSize, qrSize);
-    
-    // Vẽ viền trắng dày 5px
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    
     ctx.restore();
 
-    // Vẽ ảnh 3: Bottom Center - bo tròn
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(-qrSize / 2 - qrSize / 2, 0);
-    ctx.arc(-qrSize / 2, 0, qrSize / 2, 0, Math.PI * 2); // vị trí vẽ: bottom center
+    ctx.arc(-qrSize / 2, 0, qrSize / 2, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(img3, -qrSize, 0, qrSize, qrSize);
-    
-    // Vẽ viền trắng
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 5;
-    ctx.stroke();
     ctx.restore();
 
-    ctx.restore(); // khôi phục trạng thái ban đầu
-
-    // Xuất ra ảnh và set vào state
     const imageSrc = canvas.toDataURL("image/png");
     setImageSrc(imageSrc);
   }, [data, qrSize, qrOptions]);
@@ -121,10 +100,8 @@ const HeartMaskQRCode = ({
 
   const generateQRBase64 = async (text: string): Promise<string> => {
     try {
-      // Dynamic import để tránh SSR issues
       const { default: QRCodeStyling } = await import("qr-code-styling");
-      
-      // Map eye shapes to qr-code-styling types
+
       const getCornerSquareType = (eyeShape?: string) => {
         switch (eyeShape) {
           case "dots": return "dot";
@@ -161,7 +138,6 @@ const HeartMaskQRCode = ({
         }
       };
 
-      // Create temporary QR code instance
       const qrCode = new QRCodeStyling({
         width: qrSize,
         height: qrSize,
@@ -190,25 +166,21 @@ const HeartMaskQRCode = ({
         },
       });
 
-      // Create temporary container to get canvas
       const tempDiv = document.createElement("div");
       qrCode.append(tempDiv);
-      
-      // Wait a bit for canvas to be created
+
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       const canvas = tempDiv.querySelector("canvas");
       if (!canvas) throw new Error("Canvas not found");
-      
+
       const dataUrl = canvas.toDataURL("image/png");
-      
-      // Clean up
+
       tempDiv.remove();
-      
+
       return dataUrl;
     } catch (error) {
       console.error("Error generating QR:", error);
-      // Fallback to simple QR if qr-code-styling fails
       const QRCode = (await import("qrcode")).default;
       return await QRCode.toDataURL(text, {
         width: qrSize,
@@ -217,7 +189,6 @@ const HeartMaskQRCode = ({
       });
     }
   };
-
 
 
   const handleDownload = () => {
@@ -255,7 +226,3 @@ const HeartMaskQRCode = ({
 };
 
 export default HeartMaskQRCode;
-
-// dotsOptions: { color: qrOptions.color?.color, type: "rounded" },
-// cornerSquareTypes: { color: qrOptions.color?.color, type: "extra-rounded" },
-// cornerDotsOptions: { color: qrOptions.color?.color, type: "dot" },
