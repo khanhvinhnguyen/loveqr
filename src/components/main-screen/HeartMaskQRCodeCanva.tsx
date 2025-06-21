@@ -14,7 +14,7 @@ interface HeartMaskQRCodeProps {
 }
 
 const HeartMaskQRCode = ({
-  data = 'https://example.com',
+  data = 'https://example.com', 
   qrSize = 300,
   qrOptions = {
     color: {
@@ -61,24 +61,27 @@ const HeartMaskQRCode = ({
 
     ctx.save();
 
+    // Áp dụng rotate + scale + translate toàn bộ
     ctx.translate(canvas.width / 2, canvas.height / 2); // Dịch tâm đến giữa canvas
     ctx.scale(0.75, 0.75); // scale(0.75)
     ctx.rotate(0.625 * Math.PI * 2); // rotate(0.625turn)
     ctx.translate(8 * 16, 8 * 16); // translate(8rem, 8rem) ≈ 128px
 
-    ctx.drawImage(img1, -qrSize, -qrSize, qrSize, qrSize);
-
-    ctx.strokeStyle = strokeStyle;
-    ctx.strokeRect(-qrSize, -qrSize, qrSize, qrSize);
-
     // Vẽ ảnh 2: Top Right - bo tròn
     ctx.save();
+
     ctx.beginPath();
     ctx.moveTo(0, -qrSize / 2);
     ctx.arc(0, -qrSize / 2, qrSize / 2, Math.PI * 0.5, Math.PI * 1.5, true);
     ctx.closePath();
     ctx.clip();
+    
     ctx.drawImage(img2, 0, -qrSize, qrSize, qrSize);
+    
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    
     ctx.restore();
 
     ctx.save();
@@ -88,6 +91,18 @@ const HeartMaskQRCode = ({
     ctx.closePath();
     ctx.clip();
     ctx.drawImage(img3, -qrSize, 0, qrSize, qrSize);
+    
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.drawImage(img1, -qrSize, -qrSize, qrSize, qrSize);
+
+    ctx.strokeStyle = strokeStyle;
+    // ctx.lineWidth = 5;
+    ctx.strokeRect(-qrSize, -qrSize, qrSize, qrSize);
+
     ctx.restore();
 
     const imageSrc = canvas.toDataURL("image/png");
@@ -101,7 +116,7 @@ const HeartMaskQRCode = ({
   const generateQRBase64 = async (text: string): Promise<string> => {
     try {
       const { default: QRCodeStyling } = await import("qr-code-styling");
-
+      
       const getCornerSquareType = (eyeShape?: string) => {
         switch (eyeShape) {
           case "dots": return "dot";
@@ -168,16 +183,16 @@ const HeartMaskQRCode = ({
 
       const tempDiv = document.createElement("div");
       qrCode.append(tempDiv);
-
+      
       await new Promise(resolve => setTimeout(resolve, 100));
-
+      
       const canvas = tempDiv.querySelector("canvas");
       if (!canvas) throw new Error("Canvas not found");
-
+      
       const dataUrl = canvas.toDataURL("image/png");
-
+      
       tempDiv.remove();
-
+      
       return dataUrl;
     } catch (error) {
       console.error("Error generating QR:", error);
@@ -189,6 +204,7 @@ const HeartMaskQRCode = ({
       });
     }
   };
+
 
 
   const handleDownload = () => {
